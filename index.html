@@ -190,7 +190,10 @@
   <div class="tab" onclick="showTab('strings')">Strings</div>
   <div class="tab" onclick="showTab('collections')">Collections</div>
   <div class="tab" onclick="showTab('loops')">Loops &amp; Control</div>
+  <div class="tab" onclick="showTab('conditionals')">Condicionales</div>
+  <div class="tab" onclick="showTab('types')">Tipos &amp; Casting</div>
   <div class="tab" onclick="showTab('sorting')">Sorting</div>
+  <div class="tab" onclick="showTab('functional')">Functional</div>
   <div class="tab" onclick="showTab('complexity')">Complejidad</div>
 </nav>
 
@@ -769,6 +772,413 @@ list.sort((a, b) -&gt; b - a);
 
   </div>
 </div>
+
+<!-- CONDITIONALS -->
+<div class="panel" id="panel-conditionals">
+  <div class="section-title">Condicionales y operadores</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">if</div>
+        <div class="card-title">if / else if / else</div>
+        <span class="badge">Conditionals</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="kw">if</span> (x &gt; 0) {
+    <span class="comment">// positivo</span>
+} <span class="kw">else if</span> (x &lt; 0) {
+    <span class="comment">// negativo</span>
+} <span class="kw">else</span> {
+    <span class="comment">// cero</span>
+}
+
+<span class="comment">// Ternario (una sola expresión)</span>
+<span class="type">String</span> res = (x &gt; 0) ? <span class="str">"pos"</span> : <span class="str">"neg"</span>;
+
+<span class="comment">// Ternario anidado (úsalo con moderación)</span>
+<span class="type">String</span> res = (x &gt; 0) ? <span class="str">"pos"</span>
+           : (x &lt; 0) ? <span class="str">"neg"</span>
+           : <span class="str">"zero"</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">sw</div>
+        <div class="card-title">switch / switch expression</div>
+        <span class="badge">Switch</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Switch clásico</span>
+<span class="kw">switch</span> (day) {
+    <span class="kw">case</span> <span class="num">1</span>: result = <span class="str">"Lunes"</span>; <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>: result = <span class="str">"Martes"</span>; <span class="kw">break</span>;
+    <span class="kw">default</span>: result = <span class="str">"Otro"</span>;
+}
+
+<span class="comment">// Switch expression (Java 14+) — más limpio</span>
+<span class="type">String</span> result = <span class="kw">switch</span> (day) {
+    <span class="kw">case</span> <span class="num">1</span> -&gt; <span class="str">"Lunes"</span>;
+    <span class="kw">case</span> <span class="num">2</span> -&gt; <span class="str">"Martes"</span>;
+    <span class="kw">default</span> -&gt; <span class="str">"Otro"</span>;
+};</pre>
+        </div>
+        <div class="note"><strong>OJO:</strong> En el switch clásico siempre pon <code>break</code> o caerá al siguiente case.</div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">&amp;&amp;</div>
+        <div class="card-title">Operadores lógicos</div>
+        <span class="badge">Logical</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// AND, OR, NOT</span>
+a &amp;&amp; b        <span class="comment">// AND  — ambos true</span>
+a || b        <span class="comment">// OR   — al menos uno true</span>
+!a            <span class="comment">// NOT  — invierte</span>
+
+<span class="comment">// Short-circuit: Java deja de evaluar</span>
+<span class="comment">// si el resultado ya está determinado</span>
+<span class="kw">if</span> (list != <span class="kw">null</span> &amp;&amp; list.size() &gt; <span class="num">0</span>) { }
+<span class="comment">// Si list==null, nunca evalúa list.size()</span>
+
+<span class="comment">// Comparación de objetos</span>
+a.equals(b)       <span class="comment">// contenido (Strings, objetos)</span>
+a == b            <span class="comment">// referencia (primitivos OK)</span>
+Objects.equals(a, b)  <span class="comment">// null-safe</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">==</div>
+        <div class="card-title">Operadores de comparación</div>
+        <span class="badge">Comparison</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Relacionales</span>
+a == b    <span class="comment">// igual</span>
+a != b    <span class="comment">// distinto</span>
+a &gt;  b    <span class="comment">// mayor que</span>
+a &lt;  b    <span class="comment">// menor que</span>
+a &gt;= b    <span class="comment">// mayor o igual</span>
+a &lt;= b    <span class="comment">// menor o igual</span>
+
+<span class="comment">// Aritméticos</span>
+a + b     a - b     a * b
+a / b     <span class="comment">// división entera si ambos int</span>
+a % b     <span class="comment">// módulo (resto)</span>
+a++       <span class="comment">// post-incremento</span>
+++a       <span class="comment">// pre-incremento</span>
+
+<span class="comment">// Asignación compuesta</span>
+a += b;   a -= b;   a *= b;   a /= b;</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TYPES -->
+<div class="panel" id="panel-types">
+  <div class="section-title">Tipos de datos y conversiones</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">T</div>
+        <div class="card-title">Tipos primitivos</div>
+        <span class="badge">Primitives</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="type">int</span>     <span class="comment">// -2.1B a 2.1B       (32 bits)</span>
+<span class="type">long</span>    <span class="comment">// -9.2Q a 9.2Q       (64 bits)</span>
+<span class="type">double</span>  <span class="comment">// decimal doble prec (64 bits)</span>
+<span class="type">float</span>   <span class="comment">// decimal simple     (32 bits)</span>
+<span class="type">char</span>    <span class="comment">// un caracter        (16 bits)</span>
+<span class="type">boolean</span> <span class="comment">// true / false       (1 bit)</span>
+<span class="type">byte</span>    <span class="comment">// -128 a 127         (8 bits)</span>
+
+<span class="comment">// Literales</span>
+<span class="type">long</span>   x = <span class="num">9_000_000_000L</span>;   <span class="comment">// L al final</span>
+<span class="type">double</span> d = <span class="num">3.14</span>;
+<span class="type">float</span>  f = <span class="num">3.14f</span>;             <span class="comment">// f al final</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">↯</div>
+        <div class="card-title">Casting y conversiones</div>
+        <span class="badge">Casting</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Widening (automático, sin pérdida)</span>
+<span class="type">int</span>    i = <span class="num">42</span>;
+<span class="type">long</span>   l = i;       <span class="comment">// int → long OK</span>
+<span class="type">double</span> d = i;       <span class="comment">// int → double OK</span>
+
+<span class="comment">// Narrowing (manual, puede perder datos)</span>
+<span class="type">double</span> d = <span class="num">9.99</span>;
+<span class="type">int</span>    i = (<span class="type">int</span>) d;  <span class="comment">// → 9 (trunca decimal)</span>
+
+<span class="comment">// int ↔ String</span>
+<span class="type">String</span> s = Integer.toString(n);
+<span class="type">String</span> s = String.valueOf(n);
+<span class="type">int</span>    n = Integer.parseInt(s);
+
+<span class="comment">// char ↔ int</span>
+<span class="type">int</span>  n = (<span class="type">int</span>) <span class="str">'A'</span>;    <span class="comment">// → 65</span>
+<span class="type">char</span> c = (<span class="type">char</span>) <span class="num">65</span>;   <span class="comment">// → 'A'</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">⬜</div>
+        <div class="card-title">Wrapper classes</div>
+        <span class="badge">Autoboxing</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Primitivo → Objeto (necesario en colecciones)</span>
+<span class="type">int</span>     →  <span class="type">Integer</span>
+<span class="type">long</span>    →  <span class="type">Long</span>
+<span class="type">double</span>  →  <span class="type">Double</span>
+<span class="type">char</span>    →  <span class="type">Character</span>
+<span class="type">boolean</span> →  <span class="type">Boolean</span>
+
+<span class="comment">// Autoboxing (Java lo hace automático)</span>
+<span class="type">Integer</span> x = <span class="num">5</span>;        <span class="comment">// int → Integer</span>
+<span class="type">int</span>     y = x;        <span class="comment">// Integer → int</span>
+
+<span class="comment">// Métodos útiles de Integer</span>
+Integer.MAX_VALUE
+Integer.MIN_VALUE
+Integer.toBinaryString(n)  <span class="comment">// → "1010"</span>
+Integer.bitCount(n)        <span class="comment">// cuenta bits en 1</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">≈</div>
+        <div class="card-title">Null y Optional</div>
+        <span class="badge">Null safety</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Null checks clásicos</span>
+<span class="kw">if</span> (obj != <span class="kw">null</span>) { obj.doSomething(); }
+Objects.isNull(obj);
+Objects.nonNull(obj);
+
+<span class="comment">// Optional — evita NullPointerException</span>
+<span class="type">Optional</span>&lt;<span class="type">String</span>&gt; opt = Optional.ofNullable(val);
+
+opt.isPresent();             <span class="comment">// ¿tiene valor?</span>
+opt.get();                   <span class="comment">// obtener (lanza si vacío)</span>
+opt.orElse(<span class="str">"default"</span>);      <span class="comment">// valor si vacío</span>
+opt.orElseGet(() -&gt; calc()); <span class="comment">// lazy default</span>
+opt.ifPresent(v -&gt; use(v));  <span class="comment">// ejecutar si existe</span></pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FUNCTIONAL -->
+<div class="panel" id="panel-functional">
+  <div class="section-title">Programación funcional en Java</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">λ</div>
+        <div class="card-title">Lambdas e interfaces funcionales</div>
+        <span class="badge">Lambda</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Sintaxis: (params) -> cuerpo</span>
+() -&gt; System.out.println(<span class="str">"hi"</span>)
+x  -&gt; x * <span class="num">2</span>
+(a, b) -&gt; a + b
+(a, b) -&gt; { <span class="type">int</span> r = a + b; <span class="kw">return</span> r; }
+
+<span class="comment">// Interfaces funcionales más comunes</span>
+<span class="type">Runnable</span>   r = () -&gt; doSomething();
+<span class="type">Supplier</span>&lt;<span class="type">T</span>&gt; s = () -&gt; getValue();      <span class="comment">// produce T</span>
+<span class="type">Consumer</span>&lt;<span class="type">T</span>&gt; c = x -&gt; process(x);      <span class="comment">// consume T</span>
+<span class="type">Function</span>&lt;<span class="type">T</span>,<span class="type">R</span>&gt; f = x -&gt; transform(x);  <span class="comment">// T → R</span>
+<span class="type">Predicate</span>&lt;<span class="type">T</span>&gt; p = x -&gt; x &gt; <span class="num">0</span>;         <span class="comment">// T → boolean</span>
+<span class="type">BiFunction</span>&lt;<span class="type">T</span>,<span class="type">U</span>,<span class="type">R</span>&gt; bf = (a,b) -&gt; a+b;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">::</div>
+        <div class="card-title">Method references</div>
+        <span class="badge">Ref</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Atajo para lambdas que llaman un método</span>
+
+<span class="comment">// Método estático</span>
+<span class="type">Function</span>&lt;<span class="type">String</span>,<span class="type">Integer</span>&gt; f = Integer::parseInt;
+
+<span class="comment">// Método de instancia sobre objeto</span>
+<span class="type">Consumer</span>&lt;<span class="type">String</span>&gt; c = System.out::println;
+
+<span class="comment">// Método de instancia sobre tipo</span>
+<span class="type">Function</span>&lt;<span class="type">String</span>,<span class="type">String</span>&gt; up = String::toUpperCase;
+
+<span class="comment">// Constructor</span>
+<span class="type">Supplier</span>&lt;<span class="type">ArrayList</span>&gt; s = ArrayList::new;
+
+<span class="comment">// Equivalencias</span>
+x -&gt; Integer.parseInt(x)  ==  Integer::parseInt
+x -&gt; x.toUpperCase()      ==  String::toUpperCase</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green card-full">
+      <div class="card-header">
+        <div class="card-icon">~</div>
+        <div class="card-title">Stream API — el flujo completo</div>
+        <span class="badge">Streams</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Crear streams</span>
+list.stream()
+Arrays.stream(arr)
+Stream.of(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+IntStream.range(<span class="num">0</span>, <span class="num">10</span>)          <span class="comment">// 0..9</span>
+IntStream.rangeClosed(<span class="num">1</span>, <span class="num">10</span>)    <span class="comment">// 1..10</span>
+
+<span class="comment">// Operaciones intermedias (lazy — no ejecutan hasta terminal)</span>
+.filter(x -&gt; x &gt; <span class="num">0</span>)             <span class="comment">// filtrar</span>
+.map(x -&gt; x * <span class="num">2</span>)                <span class="comment">// transformar</span>
+.mapToInt(String::length)        <span class="comment">// → IntStream</span>
+.flatMap(x -&gt; x.stream())       <span class="comment">// aplanar listas anidadas</span>
+.distinct()                      <span class="comment">// eliminar duplicados</span>
+.sorted()                        <span class="comment">// ordenar</span>
+.sorted((a,b) -&gt; b - a)         <span class="comment">// ordenar con comparator</span>
+.limit(n)                        <span class="comment">// tomar solo n elementos</span>
+.skip(n)                         <span class="comment">// saltar n elementos</span>
+.peek(x -&gt; System.out.println(x))<span class="comment">// debug sin modificar</span>
+
+<span class="comment">// Operaciones terminales (ejecutan el pipeline)</span>
+.collect(Collectors.toList())    <span class="comment">// → List</span>
+.collect(Collectors.toSet())     <span class="comment">// → Set</span>
+.collect(Collectors.joining(", "))<span class="comment">// → String</span>
+.toArray()                       <span class="comment">// → array</span>
+.forEach(x -&gt; use(x))           <span class="comment">// iterar</span>
+.count()                         <span class="comment">// contar elementos</span>
+.sum()                           <span class="comment">// solo en IntStream</span>
+.min(Comparator.naturalOrder())  <span class="comment">// → Optional</span>
+.max(Comparator.naturalOrder())  <span class="comment">// → Optional</span>
+.findFirst()                     <span class="comment">// → Optional primer elem</span>
+.anyMatch(x -&gt; x &gt; <span class="num">0</span>)          <span class="comment">// → boolean</span>
+.allMatch(x -&gt; x &gt; <span class="num">0</span>)          <span class="comment">// → boolean</span>
+.noneMatch(x -&gt; x &lt; <span class="num">0</span>)         <span class="comment">// → boolean</span>
+.reduce(<span class="num">0</span>, (a, b) -&gt; a + b)     <span class="comment">// → acumular en valor</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">▶</div>
+        <div class="card-title">Ejemplos reales con streams</div>
+        <span class="badge">Examples</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Suma de elementos positivos</span>
+<span class="type">int</span> sum = nums.stream()
+             .filter(x -&gt; x &gt; <span class="num">0</span>)
+             .mapToInt(Integer::intValue)
+             .sum();
+
+<span class="comment">// Frecuencia de caracteres</span>
+Map&lt;Character, Long&gt; freq = s.chars()
+    .mapToObj(c -&gt; (<span class="type">char</span>) c)
+    .collect(Collectors.groupingBy(c -&gt; c, Collectors.counting()));
+
+<span class="comment">// Agrupar strings por longitud</span>
+Map&lt;Integer, List&lt;String&gt;&gt; byLen = words.stream()
+    .collect(Collectors.groupingBy(String::length));
+
+<span class="comment">// List&lt;int[]&gt; → List con solo primeras columnas</span>
+List&lt;Integer&gt; firsts = matrix.stream()
+    .map(row -&gt; row[<span class="num">0</span>])
+    .collect(Collectors.toList());</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-red">
+      <div class="card-header">
+        <div class="card-icon">∫</div>
+        <div class="card-title">Collectors más útiles</div>
+        <span class="badge">Collectors</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre>Collectors.toList()
+Collectors.toSet()
+Collectors.toUnmodifiableList()
+Collectors.joining(<span class="str">", "</span>)
+Collectors.joining(<span class="str">", "</span>, <span class="str">"["</span>, <span class="str">"]"</span>)  <span class="comment">// prefix/suffix</span>
+Collectors.counting()
+Collectors.summingInt(x -&gt; x)
+Collectors.averagingInt(x -&gt; x)
+Collectors.groupingBy(keyFn)
+Collectors.groupingBy(keyFn, Collectors.counting())
+Collectors.partitioningBy(predicate) <span class="comment">// → Map&lt;Boolean,List&gt;</span>
+Collectors.toMap(keyFn, valueFn)</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
 </main>
 
