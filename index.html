@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Algorithms Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
+
+  header {
+    padding: 48px 40px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; top: -60px; left: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 12px; opacity: 0.8;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 48px); font-weight: 800; line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; font-weight: 400; }
+
+  nav {
+    display: flex; gap: 4px; padding: 16px 40px 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 10px 20px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    cursor: pointer; border-radius: 8px 8px 0 0;
+    border: 1px solid transparent; border-bottom: none;
+    transition: all 0.2s; white-space: nowrap; letter-spacing: 0.5px;
+  }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active {
+    color: var(--accent); background: var(--surface);
+    border-color: var(--border); border-bottom-color: var(--surface); margin-bottom: -1px;
+  }
+
+  main { padding: 32px 40px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-header {
+    padding: 16px 20px 12px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; font-family: 'JetBrains Mono', monospace; }
+  .badge {
+    margin-left: auto; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 600;
+  }
+  .card-body { padding: 16px 20px; }
+
+  /* COLOR VARIANTS */
+  .c-blue .card-icon { background: rgba(0,212,255,0.15); color: var(--accent); }
+  .c-blue .card-title { color: var(--accent); }
+  .c-blue .badge { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .c-purple .card-icon { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .c-purple .card-title { color: #a78bfa; }
+  .c-purple .badge { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .c-green .card-icon { background: rgba(16,185,129,0.15); color: var(--accent3); }
+  .c-green .card-title { color: var(--accent3); }
+  .c-green .badge { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .c-amber .card-icon { background: rgba(245,158,11,0.15); color: var(--accent4); }
+  .c-amber .card-title { color: var(--accent4); }
+  .c-amber .badge { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+  .c-red .card-icon { background: rgba(239,68,68,0.15); color: #f87171; }
+  .c-red .card-title { color: #f87171; }
+  .c-red .badge { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+  /* CODE BLOCKS - button OUTSIDE pre */
+  .code-wrap { position: relative; margin-bottom: 0; }
+  .code-wrap + .code-wrap { margin-top: 10px; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 4px 8px; border-radius: 4px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .copy-btn.copied { color: var(--accent3); border-color: var(--accent3); }
+
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    line-height: 1.7; overflow-x: auto;
+    white-space: pre; word-break: normal; display: block;
+  }
+  pre + pre { margin-top: 10px; }
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-track { background: var(--code-bg); }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .comment { color: #4a5568; }
+  .kw { color: #7c3aed; }
+  .type { color: #00d4ff; }
+  .str { color: #10b981; }
+  .num { color: #f59e0b; }
+  .method { color: #60a5fa; }
+
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin: 32px 0 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  th { padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: 11px; letter-spacing: 1px; }
+  td { padding: 9px 14px; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .o-good { color: var(--accent3); }
+  .o-ok { color: var(--accent4); }
+  .o-bad { color: #f87171; }
+
+  .note {
+    background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15);
+    border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6;
+  }
+  .note strong { color: var(--accent); }
+  .warn {
+    background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.15);
+    border-left: 3px solid var(--accent4); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6;
+  }
+  .warn strong { color: var(--accent4); }
+
+  .card-full { grid-column: 1 / -1; }
+
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+    header, nav, main { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">// cheatsheet · algorithms</div>
+  <h1>Java for Algorithms</h1>
+  <p class="subtitle">Lo que necesitas saber — nada más, nada menos.</p>
+</header>
+
+<nav>
+  <div class="tab active" onclick="showTab('arrays')">Arrays</div>
+  <div class="tab" onclick="showTab('strings')">Strings</div>
+  <div class="tab" onclick="showTab('collections')">Collections</div>
+  <div class="tab" onclick="showTab('loops')">Loops &amp; Control</div>
+  <div class="tab" onclick="showTab('sorting')">Sorting</div>
+  <div class="tab" onclick="showTab('complexity')">Complejidad</div>
+</nav>
+
+<main>
+
+<!-- ARRAYS -->
+<div class="panel active" id="panel-arrays">
+  <div class="section-title">Declaración e inicialización</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">[]</div>
+        <div class="card-title">Array básico</div>
+        <span class="badge">O(1) access</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Declarar con tamaño</span>
+<span class="type">int</span>[] nums = <span class="kw">new</span> <span class="type">int</span>[<span class="num">5</span>];
+
+<span class="comment">// Inicializar con valores</span>
+<span class="type">int</span>[] nums = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>};
+
+<span class="comment">// 2D array (matriz)</span>
+<span class="type">int</span>[][] mat = <span class="kw">new</span> <span class="type">int</span>[<span class="num">3</span>][<span class="num">4</span>];
+<span class="type">int</span>[][] mat = {{<span class="num">1</span>,<span class="num">0</span>},{<span class="num">0</span>,<span class="num">1</span>}};
+
+<span class="comment">// Tamaño</span>
+nums.length;           <span class="comment">// filas</span>
+mat[<span class="num">0</span>].length;        <span class="comment">// columnas</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">∑</div>
+        <div class="card-title">Operaciones comunes</div>
+        <span class="badge">Arrays API</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="kw">import</span> java.util.Arrays;
+
+<span class="comment">// Ordenar</span>
+Arrays.<span class="method">sort</span>(nums);
+
+<span class="comment">// Llenar con valor</span>
+Arrays.<span class="method">fill</span>(nums, <span class="num">0</span>);
+
+<span class="comment">// Copiar</span>
+<span class="type">int</span>[] copy = Arrays.<span class="method">copyOf</span>(nums, nums.length);
+<span class="type">int</span>[] sub  = Arrays.<span class="method">copyOfRange</span>(nums, <span class="num">1</span>, <span class="num">4</span>);
+
+<span class="comment">// Comparar e imprimir</span>
+Arrays.<span class="method">equals</span>(a, b);
+Arrays.<span class="method">toString</span>(nums);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">↔</div>
+        <div class="card-title">Patrones típicos</div>
+        <span class="badge">Two pointers</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Two pointers clásico</span>
+<span class="type">int</span> left = <span class="num">0</span>, right = nums.length - <span class="num">1</span>;
+<span class="kw">while</span> (left &lt; right) {
+    left++;
+    right--;
+}
+
+<span class="comment">// Sliding window</span>
+<span class="type">int</span> start = <span class="num">0</span>, sum = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span> end = <span class="num">0</span>; end &lt; nums.length; end++) {
+    sum += nums[end];
+    <span class="kw">while</span> (sum &gt; target) {
+        sum -= nums[start++];
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STRINGS -->
+<div class="panel" id="panel-strings">
+  <div class="section-title">String methods más usados en algoritmos</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">"</div>
+        <div class="card-title">Métodos esenciales</div>
+        <span class="badge">String API</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="type">String</span> s = <span class="str">"hello world"</span>;
+
+s.length();               <span class="comment">// 11</span>
+s.charAt(<span class="num">0</span>);             <span class="comment">// 'h'</span>
+s.substring(<span class="num">6</span>);          <span class="comment">// "world"</span>
+s.substring(<span class="num">0</span>, <span class="num">5</span>);       <span class="comment">// "hello"</span>
+s.indexOf(<span class="str">"o"</span>);          <span class="comment">// 4</span>
+s.contains(<span class="str">"world"</span>);    <span class="comment">// true</span>
+s.replace(<span class="str">"l"</span>, <span class="str">"L"</span>);    <span class="comment">// "heLLo worLd"</span>
+s.toUpperCase();
+s.toLowerCase();
+s.trim();                 <span class="comment">// quita espacios</span>
+s.split(<span class="str">" "</span>);            <span class="comment">// ["hello","world"]</span>
+s.equals(<span class="str">"hello"</span>);      <span class="comment">// comparar (NO ==)</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">SB</div>
+        <div class="card-title">StringBuilder</div>
+        <span class="badge">Mutable string</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// String + String en loop = O(n²) BAD</span>
+<span class="comment">// StringBuilder en loop  = O(n)   GOOD</span>
+
+<span class="type">StringBuilder</span> sb = <span class="kw">new</span> <span class="type">StringBuilder</span>();
+sb.append(<span class="str">"hello"</span>);
+sb.append(<span class="str">" world"</span>);
+sb.insert(<span class="num">0</span>, <span class="str">"!"</span>);        <span class="comment">// insertar en índice</span>
+sb.reverse();             <span class="comment">// invertir</span>
+sb.deleteCharAt(<span class="num">0</span>);      <span class="comment">// eliminar char</span>
+sb.length();
+sb.charAt(<span class="num">0</span>);
+
+<span class="type">String</span> result = sb.toString();</pre>
+        </div>
+        <div class="note"><strong>Tip:</strong> Siempre usa StringBuilder para construir strings en loops.</div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">[]</div>
+        <div class="card-title">String ↔ char[]</div>
+        <span class="badge">Conversiones</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// String → char array</span>
+<span class="type">char</span>[] chars = s.toCharArray();
+
+<span class="comment">// char array → String</span>
+<span class="type">String</span> s2 = <span class="kw">new</span> <span class="type">String</span>(chars);
+
+<span class="comment">// Iterar caracteres</span>
+<span class="kw">for</span> (<span class="type">char</span> c : s.toCharArray()) { }
+
+<span class="comment">// Char a índice (ASCII trick)</span>
+<span class="type">int</span> idx = c - <span class="str">'a'</span>; <span class="comment">// a=0, b=1, ..., z=25</span>
+
+<span class="comment">// Checks</span>
+Character.isLetter(c);
+Character.isDigit(c);</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COLLECTIONS -->
+<div class="panel" id="panel-collections">
+  <div class="section-title">Las estructuras que más usarás</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">🗺</div>
+        <div class="card-title">HashMap</div>
+        <span class="badge">O(1) avg</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="type">HashMap</span>&lt;<span class="type">Integer</span>, <span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+
+map.put(key, value);
+map.get(key);                 <span class="comment">// null si no existe</span>
+map.getOrDefault(key, <span class="num">0</span>);    <span class="comment">// default si no existe</span>
+map.containsKey(key);
+map.remove(key);
+map.size();
+
+<span class="comment">// Patrón contador (muy frecuente)</span>
+map.put(key, map.getOrDefault(key, <span class="num">0</span>) + <span class="num">1</span>);
+
+<span class="comment">// Iterar</span>
+<span class="kw">for</span> (<span class="type">Map</span>.<span class="type">Entry</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; e : map.entrySet()) {
+    e.getKey();   e.getValue();
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">⬡</div>
+        <div class="card-title">HashSet</div>
+        <span class="badge">O(1) avg</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="type">HashSet</span>&lt;<span class="type">Integer</span>&gt; set = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;();
+
+set.add(val);
+set.contains(val);    <span class="comment">// el más usado</span>
+set.remove(val);
+set.size();
+
+<span class="comment">// Detectar duplicados</span>
+<span class="type">HashSet</span>&lt;<span class="type">Integer</span>&gt; seen = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> n : nums) {
+    <span class="kw">if</span> (!seen.add(n)) {
+        <span class="comment">// n es duplicado</span>
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">⇌</div>
+        <div class="card-title">Stack / Queue</div>
+        <span class="badge">O(1)</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// STACK (LIFO)</span>
+<span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; stack = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+stack.push(val);      <span class="comment">// agregar arriba</span>
+stack.pop();          <span class="comment">// sacar arriba</span>
+stack.peek();         <span class="comment">// ver sin sacar</span>
+stack.isEmpty();
+
+<span class="comment">// QUEUE (FIFO)</span>
+<span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+q.offer(val);         <span class="comment">// agregar atrás</span>
+q.poll();             <span class="comment">// sacar frente</span>
+q.peek();             <span class="comment">// ver sin sacar</span>
+q.isEmpty();</pre>
+        </div>
+        <div class="note"><strong>Regla:</strong> Stack → push/pop/peek · Queue → offer/poll/peek</div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div class="card-title">ArrayList</div>
+        <span class="badge">Dynamic array</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="type">List</span>&lt;<span class="type">Integer</span>&gt; list = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+list.add(val);
+list.add(<span class="num">0</span>, val);     <span class="comment">// insertar en índice</span>
+list.get(i);
+list.set(i, val);     <span class="comment">// modificar</span>
+list.remove(i);       <span class="comment">// por índice</span>
+list.size();
+list.contains(val);
+Collections.sort(list);
+
+<span class="comment">// List → int[]</span>
+list.stream()
+    .mapToInt(Integer::intValue)
+    .toArray();</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-red">
+      <div class="card-header">
+        <div class="card-icon">⛰</div>
+        <div class="card-title">PriorityQueue (Heap)</div>
+        <span class="badge">O(log n)</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Min-heap (default) — menor sale primero</span>
+<span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; minH = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;();
+
+<span class="comment">// Max-heap — mayor sale primero</span>
+<span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; maxH =
+    <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(Collections.reverseOrder());
+
+minH.offer(val);      <span class="comment">// agregar</span>
+minH.poll();          <span class="comment">// sacar el mínimo</span>
+minH.peek();          <span class="comment">// ver sin sacar</span>
+minH.size();</pre>
+        </div>
+        <div class="warn"><strong>Cuándo usarlo:</strong> "encuentra los K elementos más grandes/pequeños"</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LOOPS -->
+<div class="panel" id="panel-loops">
+  <div class="section-title">Control de flujo</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">↺</div>
+        <div class="card-title">Tipos de for</div>
+        <span class="badge">Loops</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Clásico</span>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) { }
+
+<span class="comment">// Al revés</span>
+<span class="kw">for</span> (<span class="type">int</span> i = n-<span class="num">1</span>; i &gt;= <span class="num">0</span>; i--) { }
+
+<span class="comment">// For-each (sin necesitar el índice)</span>
+<span class="kw">for</span> (<span class="type">int</span> num : nums) { }
+
+<span class="comment">// While</span>
+<span class="kw">while</span> (condition) { }
+
+<span class="comment">// Do-while (ejecuta al menos una vez)</span>
+<span class="kw">do</span> { } <span class="kw">while</span> (condition);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-purple">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">break / continue / label</div>
+        <span class="badge">Control flow</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// break — sal del loop ahora</span>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) {
+    <span class="kw">if</span> (found) <span class="kw">break</span>;
+}
+
+<span class="comment">// continue — salta esta iteración</span>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) {
+    <span class="kw">if</span> (skip) <span class="kw">continue</span>;
+}
+
+<span class="comment">// break en loop anidado con label</span>
+outer:
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) {
+    <span class="kw">for</span> (<span class="type">int</span> j = <span class="num">0</span>; j &lt; m; j++) {
+        <span class="kw">if</span> (found) <span class="kw">break</span> outer;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">±</div>
+        <div class="card-title">Math utils</div>
+        <span class="badge">Math API</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre>Math.max(a, b);
+Math.min(a, b);
+Math.abs(x);
+Math.pow(base, exp);    <span class="comment">// retorna double</span>
+Math.sqrt(x);           <span class="comment">// retorna double</span>
+Math.floor(x);
+Math.ceil(x);
+
+<span class="comment">// Valores límite</span>
+<span class="type">int</span> MAX = Integer.MAX_VALUE;  <span class="comment">// ~2.1B</span>
+<span class="type">int</span> MIN = Integer.MIN_VALUE;  <span class="comment">// ~-2.1B</span>
+
+<span class="comment">// int ↔ String</span>
+<span class="type">String</span> s = Integer.toString(n);
+<span class="type">int</span> n    = Integer.parseInt(s);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-amber">
+      <div class="card-header">
+        <div class="card-icon">?</div>
+        <div class="card-title">Ternario y operadores de bits</div>
+        <span class="badge">Shortcuts</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Ternario</span>
+<span class="type">int</span> max = (a &gt; b) ? a : b;
+
+<span class="comment">// Operadores de bits</span>
+n &amp; <span class="num">1</span>         <span class="comment">// es impar? (1=sí, 0=no)</span>
+n &gt;&gt; <span class="num">1</span>        <span class="comment">// dividir entre 2</span>
+n &lt;&lt; <span class="num">1</span>        <span class="comment">// multiplicar por 2</span>
+a ^ b         <span class="comment">// XOR (distinto=1, igual=0)</span>
+
+<span class="comment">// Módulo siempre positivo</span>
+((n % m) + m) % m</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SORTING -->
+<div class="panel" id="panel-sorting">
+  <div class="section-title">Ordenamiento en Java</div>
+  <div class="grid">
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">↕</div>
+        <div class="card-title">Arrays.sort</div>
+        <span class="badge">O(n log n)</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// int[] — ascendente (default)</span>
+Arrays.sort(nums);
+
+<span class="comment">// Rango parcial</span>
+Arrays.sort(nums, <span class="num">1</span>, <span class="num">4</span>);  <span class="comment">// índices 1,2,3</span>
+
+<span class="comment">// Integer[] — descendente</span>
+<span class="type">Integer</span>[] nums2 = {<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>};
+Arrays.sort(nums2, Collections.reverseOrder());
+
+<span class="comment">// OJO: reverseOrder solo funciona con Integer[]</span>
+<span class="comment">// no con int[]</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">λ</div>
+        <div class="card-title">Comparator con lambda</div>
+        <span class="badge">Lambda</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Ordenar strings por longitud</span>
+Arrays.sort(words, (a, b) -&gt; a.length() - b.length());
+
+<span class="comment">// Ordenar 2D array por col 1</span>
+Arrays.sort(intervals, (a, b) -&gt; a[<span class="num">1</span>] - b[<span class="num">1</span>]);
+
+<span class="comment">// Lista descendente</span>
+list.sort((a, b) -&gt; b - a);
+
+<span class="comment">// Regla:
+// a - b  →  ascendente
+// b - a  →  descendente</span></pre>
+        </div>
+        <div class="note"><strong>Truco:</strong> negativo = a va primero · positivo = b va primero</div>
+      </div>
+    </div>
+
+    <div class="card c-purple card-full">
+      <div class="card-header">
+        <div class="card-icon">🔎</div>
+        <div class="card-title">Binary Search</div>
+        <span class="badge">O(log n)</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Built-in (array debe estar ordenado)</span>
+<span class="type">int</span> idx = Arrays.binarySearch(nums, target);
+<span class="comment">// Retorna índice si existe, negativo si no</span>
+
+<span class="comment">// Implementación manual (más útil en entrevistas)</span>
+<span class="type">int</span> left = <span class="num">0</span>, right = nums.length - <span class="num">1</span>;
+<span class="kw">while</span> (left &lt;= right) {
+    <span class="type">int</span> mid = left + (right - left) / <span class="num">2</span>;  <span class="comment">// evita overflow</span>
+    <span class="kw">if</span> (nums[mid] == target)      <span class="kw">return</span> mid;
+    <span class="kw">else if</span> (nums[mid] &lt; target)  left  = mid + <span class="num">1</span>;
+    <span class="kw">else</span>                          right = mid - <span class="num">1</span>;
+}
+<span class="kw">return</span> -<span class="num">1</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPLEXITY -->
+<div class="panel" id="panel-complexity">
+  <div class="section-title">Complejidad de las estructuras</div>
+  <div class="grid">
+
+    <div class="card c-blue card-full">
+      <div class="card-header">
+        <div class="card-icon">O</div>
+        <div class="card-title">Big O — referencia rápida</div>
+      </div>
+      <div class="card-body">
+        <table>
+          <tr><th>Estructura</th><th>Acceso</th><th>Búsqueda</th><th>Inserción</th><th>Eliminación</th></tr>
+          <tr><td>Array</td><td class="o-good">O(1)</td><td class="o-ok">O(n)</td><td class="o-bad">O(n)</td><td class="o-bad">O(n)</td></tr>
+          <tr><td>ArrayList</td><td class="o-good">O(1)</td><td class="o-ok">O(n)</td><td class="o-ok">O(1) amort.</td><td class="o-bad">O(n)</td></tr>
+          <tr><td>LinkedList</td><td class="o-bad">O(n)</td><td class="o-bad">O(n)</td><td class="o-good">O(1)</td><td class="o-good">O(1)</td></tr>
+          <tr><td>HashMap</td><td>—</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td></tr>
+          <tr><td>HashSet</td><td>—</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td></tr>
+          <tr><td>TreeMap</td><td>—</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td></tr>
+          <tr><td>PriorityQueue</td><td>—</td><td class="o-bad">O(n)</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td></tr>
+          <tr><td>Stack/Deque</td><td>—</td><td>—</td><td class="o-good">O(1)</td><td class="o-good">O(1)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card c-green card-full">
+      <div class="card-header">
+        <div class="card-icon">⏱</div>
+        <div class="card-title">¿Cuándo usar qué?</div>
+      </div>
+      <div class="card-body">
+        <table>
+          <tr><th>Si el problema pide...</th><th>Usa...</th></tr>
+          <tr><td>¿Ya vi este elemento?</td><td style="color:var(--accent)">HashSet</td></tr>
+          <tr><td>Frecuencia / conteo de elementos</td><td style="color:var(--accent)">HashMap&lt;Integer, Integer&gt;</td></tr>
+          <tr><td>Paréntesis balanceados / deshacer operaciones</td><td style="color:#a78bfa">Stack (Deque)</td></tr>
+          <tr><td>BFS / recorrer nivel por nivel</td><td style="color:#a78bfa">Queue (LinkedList)</td></tr>
+          <tr><td>K elementos más grandes/pequeños</td><td style="color:var(--accent3)">PriorityQueue</td></tr>
+          <tr><td>Buscar en array ordenado</td><td style="color:var(--accent3)">Binary Search</td></tr>
+          <tr><td>Suma/max en subarreglo contiguo</td><td style="color:var(--accent4)">Sliding Window</td></tr>
+          <tr><td>Par de índices que sumen/cumplan algo</td><td style="color:var(--accent4)">Two Pointers o HashMap</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[onclick="showTab(\'' + name + '\')"]').classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  navigator.clipboard.writeText(pre.innerText.trim()).then(() => {
+    btn.textContent = 'copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+</script>
+</body>
+</html>
