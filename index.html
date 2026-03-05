@@ -107,8 +107,14 @@
   .c-red .card-icon { background: rgba(239,68,68,0.15); color: #f87171; }
   .c-red .card-title { color: #f87171; }
   .c-red .badge { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+  .c-teal .card-icon { background: rgba(20,184,166,0.15); color: #2dd4bf; }
+  .c-teal .card-title { color: #2dd4bf; }
+  .c-teal .badge { background: rgba(20,184,166,0.1); color: #2dd4bf; border: 1px solid rgba(20,184,166,0.2); }
+  .c-pink .card-icon { background: rgba(236,72,153,0.15); color: #f472b6; }
+  .c-pink .card-title { color: #f472b6; }
+  .c-pink .badge { background: rgba(236,72,153,0.1); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
 
-  /* CODE BLOCKS - button OUTSIDE pre */
+  /* CODE BLOCKS */
   .code-wrap { position: relative; margin-bottom: 0; }
   .code-wrap + .code-wrap { margin-top: 10px; }
   .copy-btn {
@@ -146,6 +152,7 @@
     margin: 32px 0 16px; display: flex; align-items: center; gap: 12px;
   }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-title:first-child { margin-top: 0; }
 
   table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
   th { padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: 11px; letter-spacing: 1px; }
@@ -381,7 +388,8 @@ Character.isDigit(c);</pre>
 
 <!-- COLLECTIONS -->
 <div class="panel" id="panel-collections">
-  <div class="section-title">Las estructuras que más usarás</div>
+
+  <div class="section-title">Fundamentales</div>
   <div class="grid">
 
     <div class="card c-blue">
@@ -395,20 +403,36 @@ Character.isDigit(c);</pre>
           <button class="copy-btn" onclick="copyCode(this)">copy</button>
           <pre><span class="type">HashMap</span>&lt;<span class="type">Integer</span>, <span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
 
+<span class="comment">// CRUD básico</span>
 map.put(key, value);
-map.get(key);                 <span class="comment">// null si no existe</span>
-map.getOrDefault(key, <span class="num">0</span>);    <span class="comment">// default si no existe</span>
+map.get(key);                     <span class="comment">// null si no existe</span>
+map.getOrDefault(key, <span class="num">0</span>);        <span class="comment">// default si no existe</span>
 map.containsKey(key);
+map.containsValue(val);
 map.remove(key);
 map.size();
+map.isEmpty();
+map.clear();
 
-<span class="comment">// Patrón contador (muy frecuente)</span>
-map.put(key, map.getOrDefault(key, <span class="num">0</span>) + <span class="num">1</span>);
+<span class="comment">// Actualizar valores</span>
+map.put(key, map.getOrDefault(key, <span class="num">0</span>) + <span class="num">1</span>);  <span class="comment">// contador</span>
+map.putIfAbsent(key, value);      <span class="comment">// solo si no existe</span>
+map.replace(key, newValue);       <span class="comment">// solo si existe</span>
+map.merge(key, <span class="num">1</span>, Integer::sum);  <span class="comment">// putIfAbsent + combinar</span>
+map.compute(key, (k,v) -> v == <span class="kw">null</span> ? <span class="num">1</span> : v+<span class="num">1</span>);
 
 <span class="comment">// Iterar</span>
 <span class="kw">for</span> (<span class="type">Map</span>.<span class="type">Entry</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; e : map.entrySet()) {
     e.getKey();   e.getValue();
-}</pre>
+}
+<span class="kw">for</span> (<span class="type">int</span> k : map.keySet()) { }
+<span class="kw">for</span> (<span class="type">int</span> v : map.values()) { }
+
+<span class="comment">// Otras utilidades</span>
+map.getOrDefault(key, defaultVal);
+map.forEach((k, v) -> process(k, v));
+map.entrySet().stream()
+   .max(Map.Entry.comparingByValue()); <span class="comment">// entrada con valor máximo</span></pre>
         </div>
       </div>
     </div>
@@ -424,18 +448,35 @@ map.put(key, map.getOrDefault(key, <span class="num">0</span>) + <span class="nu
           <button class="copy-btn" onclick="copyCode(this)">copy</button>
           <pre><span class="type">HashSet</span>&lt;<span class="type">Integer</span>&gt; set = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;();
 
-set.add(val);
-set.contains(val);    <span class="comment">// el más usado</span>
+<span class="comment">// Operaciones básicas</span>
+set.add(val);             <span class="comment">// true si se añadió (false si duplicado)</span>
+set.contains(val);        <span class="comment">// el más usado — O(1)</span>
 set.remove(val);
 set.size();
+set.isEmpty();
+set.clear();
 
-<span class="comment">// Detectar duplicados</span>
-<span class="type">HashSet</span>&lt;<span class="type">Integer</span>&gt; seen = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;();
-<span class="kw">for</span> (<span class="type">int</span> n : nums) {
-    <span class="kw">if</span> (!seen.add(n)) {
-        <span class="comment">// n es duplicado</span>
-    }
-}</pre>
+<span class="comment">// Truco: add() devuelve false si ya existía</span>
+<span class="kw">if</span> (!seen.add(n)) {
+    <span class="comment">// n es duplicado</span>
+}
+
+<span class="comment">// Operaciones de conjuntos</span>
+setA.addAll(setB);        <span class="comment">// unión (modifica setA)</span>
+setA.retainAll(setB);     <span class="comment">// intersección (modifica setA)</span>
+setA.removeAll(setB);     <span class="comment">// diferencia (modifica setA)</span>
+setA.containsAll(setB);   <span class="comment">// ¿setB es subconjunto de setA?</span>
+
+<span class="comment">// Copiar sin modificar el original</span>
+<span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; union = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;(setA);
+union.addAll(setB);
+
+<span class="comment">// Inicializar con valores</span>
+<span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; set = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;(Arrays.asList(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>));
+
+<span class="comment">// Iterar</span>
+<span class="kw">for</span> (<span class="type">int</span> x : set) { }
+set.forEach(x -> process(x));</pre>
         </div>
       </div>
     </div>
@@ -443,25 +484,33 @@ set.size();
     <div class="card c-green">
       <div class="card-header">
         <div class="card-icon">⇌</div>
-        <div class="card-title">Stack / Queue</div>
+        <div class="card-title">Stack / Queue (Deque)</div>
         <span class="badge">O(1)</span>
       </div>
       <div class="card-body">
         <div class="code-wrap">
           <button class="copy-btn" onclick="copyCode(this)">copy</button>
-          <pre><span class="comment">// STACK (LIFO)</span>
+          <pre><span class="comment">// STACK (LIFO) — usa Deque, no Stack</span>
 <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; stack = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
-stack.push(val);      <span class="comment">// agregar arriba</span>
-stack.pop();          <span class="comment">// sacar arriba</span>
-stack.peek();         <span class="comment">// ver sin sacar</span>
+stack.push(val);          <span class="comment">// agregar arriba  (addFirst)</span>
+stack.pop();              <span class="comment">// sacar arriba    (removeFirst)</span>
+stack.peek();             <span class="comment">// ver sin sacar   (peekFirst)</span>
 stack.isEmpty();
+stack.size();
 
 <span class="comment">// QUEUE (FIFO)</span>
 <span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
-q.offer(val);         <span class="comment">// agregar atrás</span>
-q.poll();             <span class="comment">// sacar frente</span>
-q.peek();             <span class="comment">// ver sin sacar</span>
-q.isEmpty();</pre>
+q.offer(val);             <span class="comment">// agregar atrás  (no lanza excepción)</span>
+q.poll();                 <span class="comment">// sacar frente   (null si vacío)</span>
+q.peek();                 <span class="comment">// ver sin sacar  (null si vacío)</span>
+q.isEmpty();
+q.size();
+
+<span class="comment">// DEQUE como doble cola (muy útil en sliding window)</span>
+<span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; dq = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+dq.addFirst(val);   dq.addLast(val);
+dq.removeFirst();   dq.removeLast();
+dq.peekFirst();     dq.peekLast();</pre>
         </div>
         <div class="note"><strong>Regla:</strong> Stack → push/pop/peek · Queue → offer/poll/peek</div>
       </div>
@@ -470,7 +519,7 @@ q.isEmpty();</pre>
     <div class="card c-amber">
       <div class="card-header">
         <div class="card-icon">📋</div>
-        <div class="card-title">ArrayList</div>
+        <div class="card-title">ArrayList / List</div>
         <span class="badge">Dynamic array</span>
       </div>
       <div class="card-body">
@@ -478,19 +527,37 @@ q.isEmpty();</pre>
           <button class="copy-btn" onclick="copyCode(this)">copy</button>
           <pre><span class="type">List</span>&lt;<span class="type">Integer</span>&gt; list = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
 
-list.add(val);
-list.add(<span class="num">0</span>, val);     <span class="comment">// insertar en índice</span>
-list.get(i);
-list.set(i, val);     <span class="comment">// modificar</span>
-list.remove(i);       <span class="comment">// por índice</span>
+<span class="comment">// Añadir y acceder</span>
+list.add(val);                    <span class="comment">// al final — O(1) amort.</span>
+list.add(<span class="num">0</span>, val);               <span class="comment">// insertar en índice — O(n)</span>
+list.get(i);                      <span class="comment">// acceso — O(1)</span>
+list.set(i, val);                 <span class="comment">// modificar</span>
+list.remove(i);                   <span class="comment">// por índice</span>
+list.remove(Integer.valueOf(val));<span class="comment">// por valor</span>
 list.size();
-list.contains(val);
+list.isEmpty();
+list.contains(val);               <span class="comment">// O(n)</span>
+list.indexOf(val);                <span class="comment">// -1 si no existe</span>
+list.clear();
+
+<span class="comment">// Sublist (vista, no copia)</span>
+list.subList(<span class="num">1</span>, <span class="num">4</span>);              <span class="comment">// índices 1,2,3</span>
+
+<span class="comment">// Ordenar</span>
 Collections.sort(list);
+list.sort((a, b) -> a - b);
+Collections.reverse(list);
+
+<span class="comment">// Conversiones</span>
+Collections.min(list);
+Collections.max(list);
+Collections.frequency(list, val); <span class="comment">// cuántas veces aparece</span>
 
 <span class="comment">// List → int[]</span>
-list.stream()
-    .mapToInt(Integer::intValue)
-    .toArray();</pre>
+list.stream().mapToInt(Integer::intValue).toArray();
+
+<span class="comment">// int[] → List (no modifiable)</span>
+<span class="type">List</span>&lt;<span class="type">Integer</span>&gt; l = Arrays.asList(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>);</pre>
         </div>
       </div>
     </div>
@@ -511,16 +578,244 @@ list.stream()
 <span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; maxH =
     <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(Collections.reverseOrder());
 
-minH.offer(val);      <span class="comment">// agregar</span>
-minH.poll();          <span class="comment">// sacar el mínimo</span>
-minH.peek();          <span class="comment">// ver sin sacar</span>
-minH.size();</pre>
+<span class="comment">// Heap de arrays (por ejemplo, por primer elemento)</span>
+<span class="type">PriorityQueue</span>&lt;<span class="type">int</span>[]&gt; pq =
+    <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;((a, b) -> a[<span class="num">0</span>] - b[<span class="num">0</span>]);
+
+minH.offer(val);          <span class="comment">// agregar — O(log n)</span>
+minH.poll();              <span class="comment">// sacar el mínimo — O(log n)</span>
+minH.peek();              <span class="comment">// ver sin sacar — O(1)</span>
+minH.contains(val);       <span class="comment">// O(n) — lento</span>
+minH.size();
+minH.isEmpty();
+
+<span class="comment">// Patrón K elementos más pequeños</span>
+<span class="kw">for</span> (<span class="type">int</span> n : nums) {
+    maxH.offer(n);
+    <span class="kw">if</span> (maxH.size() > k) maxH.poll(); <span class="comment">// elimina el mayor</span>
+}</pre>
         </div>
         <div class="warn"><strong>Cuándo usarlo:</strong> "encuentra los K elementos más grandes/pequeños"</div>
       </div>
     </div>
 
   </div>
+
+  <div class="section-title">Estructuras avanzadas</div>
+  <div class="grid">
+
+    <div class="card c-teal">
+      <div class="card-header">
+        <div class="card-icon">🌳</div>
+        <div class="card-title">TreeMap</div>
+        <span class="badge">O(log n) sorted</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Como HashMap pero con claves ORDENADAS</span>
+<span class="type">TreeMap</span>&lt;<span class="type">Integer</span>, <span class="type">String</span>&gt; tm = <span class="kw">new</span> <span class="type">TreeMap</span>&lt;&gt;();
+
+tm.put(key, value);
+tm.get(key);
+tm.containsKey(key);
+tm.remove(key);
+
+<span class="comment">// Lo que hace especial a TreeMap</span>
+tm.firstKey();            <span class="comment">// clave más pequeña</span>
+tm.lastKey();             <span class="comment">// clave más grande</span>
+tm.floorKey(k);           <span class="comment">// mayor clave &lt;= k</span>
+tm.ceilingKey(k);         <span class="comment">// menor clave >= k</span>
+tm.lowerKey(k);           <span class="comment">// mayor clave &lt; k (estricto)</span>
+tm.higherKey(k);          <span class="comment">// menor clave > k (estricto)</span>
+tm.headMap(k);            <span class="comment">// submap con claves &lt; k</span>
+tm.tailMap(k);            <span class="comment">// submap con claves >= k</span>
+tm.subMap(lo, hi);        <span class="comment">// submap [lo, hi)</span>
+
+<span class="comment">// Iterar en orden</span>
+<span class="kw">for</span> (<span class="type">Map</span>.<span class="type">Entry</span>&lt;<span class="type">Integer</span>,<span class="type">String</span>&gt; e : tm.entrySet()) { }
+<span class="comment">// Iterar en orden inverso</span>
+tm.descendingKeySet();</pre>
+        </div>
+        <div class="warn"><strong>Cuándo usarlo:</strong> necesitas el vecino más cercano a un valor, o iterar en orden.</div>
+      </div>
+    </div>
+
+    <div class="card c-pink">
+      <div class="card-header">
+        <div class="card-icon">🌲</div>
+        <div class="card-title">TreeSet</div>
+        <span class="badge">O(log n) sorted</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Como HashSet pero con elementos ORDENADOS</span>
+<span class="type">TreeSet</span>&lt;<span class="type">Integer</span>&gt; ts = <span class="kw">new</span> <span class="type">TreeSet</span>&lt;&gt;();
+
+ts.add(val);
+ts.contains(val);
+ts.remove(val);
+ts.size();
+
+<span class="comment">// Navegación (la ventaja sobre HashSet)</span>
+ts.first();               <span class="comment">// elemento más pequeño</span>
+ts.last();                <span class="comment">// elemento más grande</span>
+ts.floor(val);            <span class="comment">// mayor elemento &lt;= val</span>
+ts.ceiling(val);          <span class="comment">// menor elemento >= val</span>
+ts.lower(val);            <span class="comment">// mayor elemento &lt; val (estricto)</span>
+ts.higher(val);           <span class="comment">// menor elemento > val (estricto)</span>
+ts.pollFirst();           <span class="comment">// saca y devuelve el menor</span>
+ts.pollLast();            <span class="comment">// saca y devuelve el mayor</span>
+ts.headSet(val);          <span class="comment">// elementos &lt; val</span>
+ts.tailSet(val);          <span class="comment">// elementos >= val</span>
+ts.subSet(lo, hi);        <span class="comment">// elementos en [lo, hi)</span>
+
+<span class="comment">// Iterar en orden</span>
+<span class="kw">for</span> (<span class="type">int</span> x : ts) { }      <span class="comment">// ascendente</span>
+ts.descendingSet();       <span class="comment">// vista en orden inverso</span></pre>
+        </div>
+        <div class="warn"><strong>Cuándo usarlo:</strong> necesitas el elemento más cercano a un valor en un conjunto.</div>
+      </div>
+    </div>
+
+    <div class="card c-blue">
+      <div class="card-header">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">LinkedList</div>
+        <span class="badge">O(1) insert/delete</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Implementa List + Deque — muy flexible</span>
+<span class="type">LinkedList</span>&lt;<span class="type">Integer</span>&gt; ll = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+
+<span class="comment">// Como List</span>
+ll.add(val);              <span class="comment">// al final</span>
+ll.get(i);                <span class="comment">// O(n) — lento</span>
+ll.set(i, val);
+ll.remove(i);
+
+<span class="comment">// Como Queue (FIFO)</span>
+ll.offer(val);            <span class="comment">// agregar al final</span>
+ll.poll();                <span class="comment">// sacar del frente</span>
+ll.peek();
+
+<span class="comment">// Como Deque (doble cola)</span>
+ll.addFirst(val);   ll.addLast(val);
+ll.removeFirst();   ll.removeLast();
+ll.peekFirst();     ll.peekLast();
+
+<span class="comment">// Específico de LinkedList</span>
+ll.getFirst();   ll.getLast();
+ll.size();
+ll.isEmpty();</pre>
+        </div>
+        <div class="note"><strong>Tip:</strong> Para Queue/Deque prefiere ArrayDeque — es más rápido en la práctica.</div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <div class="card-header">
+        <div class="card-icon">🗂</div>
+        <div class="card-title">LinkedHashMap / LinkedHashSet</div>
+        <span class="badge">O(1) + orden inserción</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Como HashMap pero mantiene ORDEN DE INSERCIÓN</span>
+<span class="type">LinkedHashMap</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; lhm =
+    <span class="kw">new</span> <span class="type">LinkedHashMap</span>&lt;&gt;();
+
+lhm.put(key, value);
+lhm.get(key);
+lhm.containsKey(key);
+lhm.remove(key);
+
+<span class="comment">// Al iterar, el orden es el de inserción</span>
+<span class="kw">for</span> (<span class="type">Map</span>.<span class="type">Entry</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; e : lhm.entrySet()) { }
+
+<span class="comment">// LRU Cache trick: access-order mode</span>
+<span class="type">LinkedHashMap</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; lru =
+    <span class="kw">new</span> <span class="type">LinkedHashMap</span>&lt;&gt;(<span class="num">16</span>, <span class="num">0.75f</span>, <span class="kw">true</span>); <span class="comment">// true = access-order</span>
+
+<span class="comment">// LinkedHashSet — orden de inserción sin duplicados</span>
+<span class="type">LinkedHashSet</span>&lt;<span class="type">Integer</span>&gt; lhs = <span class="kw">new</span> <span class="type">LinkedHashSet</span>&lt;&gt;();
+lhs.add(val);
+lhs.contains(val);
+<span class="kw">for</span> (<span class="type">int</span> x : lhs) { }   <span class="comment">// itera en orden de inserción</span></pre>
+        </div>
+        <div class="warn"><strong>Cuándo usarlo:</strong> necesitas O(1) lookup Y quieres el orden de inserción (ej. LRU Cache).</div>
+      </div>
+    </div>
+
+    <div class="card c-amber card-full">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Collections — métodos de utilidad</div>
+        <span class="badge">java.util.Collections</span>
+      </div>
+      <div class="card-body">
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <pre><span class="comment">// Ordenar y reordenar</span>
+Collections.sort(list);                      <span class="comment">// ascendente</span>
+Collections.sort(list, (a, b) -> b - a);     <span class="comment">// descendente con comparator</span>
+Collections.reverse(list);                   <span class="comment">// invertir orden</span>
+Collections.shuffle(list);                   <span class="comment">// orden aleatorio</span>
+Collections.rotate(list, k);                 <span class="comment">// rotar k posiciones</span>
+Collections.swap(list, i, j);                <span class="comment">// intercambiar elementos</span>
+
+<span class="comment">// Búsqueda y estadísticas</span>
+Collections.binarySearch(list, key);         <span class="comment">// requiere lista ordenada — O(log n)</span>
+Collections.min(list);                       <span class="comment">// elemento mínimo</span>
+Collections.max(list);                       <span class="comment">// elemento máximo</span>
+Collections.frequency(list, val);            <span class="comment">// cuántas veces aparece val</span>
+Collections.disjoint(list1, list2);          <span class="comment">// true si no comparten elementos</span>
+
+<span class="comment">// Llenar y copiar</span>
+Collections.fill(list, val);                 <span class="comment">// llenar toda la lista con val</span>
+Collections.copy(dest, src);                 <span class="comment">// dest.size() debe ser >= src.size()</span>
+Collections.nCopies(n, val);                 <span class="comment">// lista inmutable con n copias de val</span>
+
+<span class="comment">// Envolver en colecciones especiales</span>
+Collections.unmodifiableList(list);          <span class="comment">// vista de solo lectura</span>
+Collections.synchronizedList(list);          <span class="comment">// thread-safe</span>
+Collections.singletonList(val);              <span class="comment">// lista de un solo elemento</span>
+Collections.emptyList();                     <span class="comment">// lista vacía inmutable</span>
+Collections.reverseOrder();                  <span class="comment">// comparator inverso (para sort/heap)</span></pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title">Referencia rápida — ¿cuál usar?</div>
+  <div class="grid">
+    <div class="card c-purple card-full">
+      <div class="card-header">
+        <div class="card-icon">⏱</div>
+        <div class="card-title">Guía de selección</div>
+      </div>
+      <div class="card-body">
+        <table>
+          <tr><th>Necesito...</th><th>Usa</th><th>Por qué</th></tr>
+          <tr><td>Lookup/conteo rápido</td><td style="color:var(--accent)">HashMap</td><td style="color:var(--muted)">O(1) avg</td></tr>
+          <tr><td>¿Ya vi este elemento?</td><td style="color:#a78bfa">HashSet</td><td style="color:var(--muted)">O(1) avg</td></tr>
+          <tr><td>Lookup + orden de inserción</td><td style="color:var(--accent3)">LinkedHashMap</td><td style="color:var(--muted)">O(1) + FIFO</td></tr>
+          <tr><td>Vecino más cercano a X</td><td style="color:#2dd4bf">TreeMap / TreeSet</td><td style="color:var(--muted)">floor/ceiling O(log n)</td></tr>
+          <tr><td>K mayores / menores</td><td style="color:#f87171">PriorityQueue</td><td style="color:var(--muted)">O(log n) insert</td></tr>
+          <tr><td>Stack (deshacer, DFS)</td><td style="color:var(--accent4)">ArrayDeque</td><td style="color:var(--muted)">push/pop O(1)</td></tr>
+          <tr><td>Queue (BFS, nivel a nivel)</td><td style="color:var(--accent4)">ArrayDeque / LinkedList</td><td style="color:var(--muted)">offer/poll O(1)</td></tr>
+          <tr><td>Lista dinámica con acceso por índice</td><td style="color:var(--accent3)">ArrayList</td><td style="color:var(--muted)">O(1) get/set</td></tr>
+          <tr><td>Muchas inserciones al inicio/final</td><td style="color:#f472b6">LinkedList / ArrayDeque</td><td style="color:var(--muted)">O(1) addFirst/Last</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- LOOPS -->
@@ -743,7 +1038,9 @@ list.sort((a, b) -&gt; b - a);
           <tr><td>LinkedList</td><td class="o-bad">O(n)</td><td class="o-bad">O(n)</td><td class="o-good">O(1)</td><td class="o-good">O(1)</td></tr>
           <tr><td>HashMap</td><td>—</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td></tr>
           <tr><td>HashSet</td><td>—</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td></tr>
+          <tr><td>LinkedHashMap</td><td>—</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td><td class="o-good">O(1) avg</td></tr>
           <tr><td>TreeMap</td><td>—</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td></tr>
+          <tr><td>TreeSet</td><td>—</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td></tr>
           <tr><td>PriorityQueue</td><td>—</td><td class="o-bad">O(n)</td><td class="o-ok">O(log n)</td><td class="o-ok">O(log n)</td></tr>
           <tr><td>Stack/Deque</td><td>—</td><td>—</td><td class="o-good">O(1)</td><td class="o-good">O(1)</td></tr>
         </table>
@@ -766,6 +1063,8 @@ list.sort((a, b) -&gt; b - a);
           <tr><td>Buscar en array ordenado</td><td style="color:var(--accent3)">Binary Search</td></tr>
           <tr><td>Suma/max en subarreglo contiguo</td><td style="color:var(--accent4)">Sliding Window</td></tr>
           <tr><td>Par de índices que sumen/cumplan algo</td><td style="color:var(--accent4)">Two Pointers o HashMap</td></tr>
+          <tr><td>Vecino más cercano a un valor</td><td style="color:#2dd4bf">TreeMap / TreeSet</td></tr>
+          <tr><td>Lookup O(1) + mantener orden de inserción</td><td style="color:#f472b6">LinkedHashMap</td></tr>
         </table>
       </div>
     </div>
